@@ -1,5 +1,7 @@
 package becker.japsum.solver;
 
+import java.util.ArrayList;
+
 public class japsumsolver {
 
 	/**
@@ -34,5 +36,25 @@ public class japsumsolver {
 		System.out.println("Wert ist: "+zelle.getValue());
 		
 		
+		
+		sumPermutations.setMaxNumber((byte)9,(byte)11);
+		sumPermutations tessuperm = new sumPermutations(new byte[]{5,7,6});
+		
+		ArrayList<ArrayList<byte[] > > compbloglist;
+		tessuperm.calculateAllPermutyations();
+		
+		compbloglist=tessuperm.findCompatibleBlogs();
+		for(int j=0;j<compbloglist.size();++j) {
+			for(int k=0;k<compbloglist.get(j).size();k++) {
+				byte[] ab=compbloglist.get(j).get(k);
+				for(int l=0;l<ab.length;++l) {
+					System.out.print(ab[l]);
+				}
+				System.out.print("|");
+			}
+			System.out.println("");
+		}
+		
+
 	}
 }
