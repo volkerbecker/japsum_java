@@ -15,7 +15,7 @@ public class Playfield {
 	
 	/**
 	 * Komnstruktor, erschafft ein spielfeld
-	 * @param playfieldsize größe des Spielfeldes
+	 * @param playfieldsize grï¿½ï¿½e des Spielfeldes
 	 * @param maxnumber maximalwert der Eintraege
 	 */
 	public Playfield(byte playfieldsize,byte maxnumber,ArrayList<byte[] > ihblocks, ArrayList<byte[] > ivblocks) {
@@ -31,7 +31,7 @@ public class Playfield {
 		vblocks=ivblocks;
 		
 		ihblocks=null;
-		ivblocks=null; // zugriff auf die Objektwerte von außen unmoeglich machen
+		ivblocks=null; // zugriff auf die Objektwerte von auï¿½en unmoeglich machen
 		sumPermutations.setMaxNumber(this.maxnumber, this.playfieldsize);
 		for(byte i=0;i<playfieldsize;++i) {
 			for(byte j=0;j<playfieldsize;++j) {
@@ -68,10 +68,12 @@ public class Playfield {
 	}
 	
 	public void setFixedValueAt(byte zeile,byte spalte,byte value) {
-		for(byte i=0;i<playfieldsize;++i) {
-			Feld[zeile][i].setValueImpossible(value);
-			Feld[i][spalte].setValueImpossible(value);
-		} //verbiete den wert in der gesamten Zeile und Spalte
+		if(value !=0) {
+			for(byte i=0;i<playfieldsize;++i) {
+				Feld[zeile][i].setValueImpossible(value);
+				Feld[i][spalte].setValueImpossible(value);
+			} //verbiete den wert in der gesamten Zeile und Spalte
+		}
 		Feld[zeile][spalte].setFixedValue(value); // Wert in der Zelle setzen, Wert in dieser Zelle wieder erlauben
 	}
 	
@@ -105,6 +107,8 @@ public class Playfield {
 				
 				if(!Feld[zeile][spalte].isValuePossible(recentpermutation[i])){
 					lineToTest.removeRecentPermutation();
+					retvalue=true;
+					break;
 				} else {
 					inThislinepossible.get(i)[recentpermutation[i]]=true;
 				}	
@@ -121,30 +125,55 @@ public class Playfield {
 							spalte=line;
 							zeile=i;
 						}
-					retvalue = true;
-					Feld[zeile][spalte].setValueImpossible(j);
-					Feld[zeile][spalte].isValueAlreadyFixed();
+					if(Feld[zeile][spalte].isValuePossible(j)){
+						retvalue = true;
+						Feld[zeile][spalte].setValueImpossible(j);
+						byte[] wert = new byte[1];
+						if(Feld[zeile][spalte].isValueAlreadyFixed(wert) ) {
+							this.setFixedValueAt((byte)zeile, (byte)spalte, wert[0]);
+						}
+					}
 					
 				}
 			}
 		}
-		
-		
+				
 	return retvalue;	
 	}
 	
-	public void solve() {
+	public boolean solve() {
 		boolean somthinChanges=false;
 		
 		do{
 			somthinChanges=false;
 			for(int i=0;i<playfieldsize;++i) {
 				somthinChanges |= tryLines(true,i);
+				//displayPlayfield();
 				somthinChanges |= tryLines(false,i);
+				//displayPlayfield();
 			}
-			displayPlayfield();
-		} while(somthinChanges);
+			//displayPlayfield();
 		
+			for(int i=0;i<playfieldsize;++i) {
+				for(int j=0;j<playfieldsize;++j) {
+					byte[] wert= new byte[1];
+					if(!Feld[i][j].isFixed()) {
+						if(Feld[i][j].isValueAlreadyFixed(wert) ) {
+							this.setFixedValueAt((byte)i, (byte)j, wert[0]);
+							somthinChanges=true;
+						}
+					}
+				}
+			}
+			//displayPlayfield();
+		} while(somthinChanges);
+		boolean retalue=true;
+		for(int i=0;i<playfieldsize;++i) {
+			for(int j=0;j<playfieldsize;++j) {
+				retalue &= Feld[i][j].isFixed();
+			}
+		}
+		return retalue;
 	}
 	
 	private byte playfieldsize,maxnumber;

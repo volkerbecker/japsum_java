@@ -15,26 +15,55 @@ public class japsumsolver {
 		ArrayList<byte[]> hblocks = new ArrayList<byte[]>();
 		ArrayList<byte[]> vblocks = new ArrayList<byte[]>();
 		
-		hblocks.add(new byte[]{11,4});
-		hblocks.add(new byte[]{11,1});
-		hblocks.add(new byte[]{4,2,8});
-		hblocks.add(new byte[]{4,11});
-		hblocks.add(new byte[]{5,1});
-		hblocks.add(new byte[]{13,2});
+//		hblocks.add(new byte[]{7,8});
+//		hblocks.add(new byte[]{6,7});
+//		hblocks.add(new byte[]{11});
+//		hblocks.add(new byte[]{2,8});
+//		hblocks.add(new byte[]{10});
+//		hblocks.add(new byte[]{5,4,3});
+//		
+//		vblocks.add(new byte[]{4,2,5});
+//		vblocks.add(new byte[]{11,3});
+//		vblocks.add(new byte[]{1,9});
+//		vblocks.add(new byte[]{5,6});
+//		vblocks.add(new byte[]{13,2});
+//		vblocks.add(new byte[]{6,3,1});
+//		
+		hblocks.add(new byte[]{20,25});
+		hblocks.add(new byte[]{5,30,4});
+		hblocks.add(new byte[]{27,6,5,2});
+		hblocks.add(new byte[]{12,24,7});
+		hblocks.add(new byte[]{20,25});
+		hblocks.add(new byte[]{25,20});
+		hblocks.add(new byte[]{13,1,4,13});
+		hblocks.add(new byte[]{6,2,37});
+		hblocks.add(new byte[]{3,10,5,15});
+		hblocks.add(new byte[]{36,6,3});
+		hblocks.add(new byte[]{1,6,2,28});
 		
-		vblocks.add(new byte[]{14,1});
-		vblocks.add(new byte[]{7,8});
-		vblocks.add(new byte[]{8,7});
-		vblocks.add(new byte[]{2,4,3});
-		vblocks.add(new byte[]{8});
-		vblocks.add(new byte[]{13,2});
+		vblocks.add(new byte[]{22,17});
+		vblocks.add(new byte[]{5,28,1});
+		vblocks.add(new byte[]{3,8,30});
+		vblocks.add(new byte[]{13,12,15});
+		vblocks.add(new byte[]{15,3,21});
+		vblocks.add(new byte[]{30,1,11});
+		vblocks.add(new byte[]{15,8,14});
+		vblocks.add(new byte[]{30,8,4});
+		vblocks.add(new byte[]{10,19,15});
+		vblocks.add(new byte[]{1,37,7});
+		vblocks.add(new byte[]{13,8,24});
 		
 		
-		Playfield riddle=new Playfield((byte)6, (byte)5, hblocks, vblocks);
+		Playfield riddle=new Playfield((byte)11, (byte)9, hblocks, vblocks);
 		
 		riddle.displayPlayfield();
 		
-		riddle.solve();
+		if(riddle.solve() ){
+			riddle.displayPlayfield();
+		} else
+		{
+			System.out.println("The algorithm did not found a solution, please contact the author!");
+		}
 		
 	//	riddle.tryLines(true, 2);
 	//	riddle.displayPlayfield();

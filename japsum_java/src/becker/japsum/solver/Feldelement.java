@@ -68,7 +68,7 @@ public class Feldelement {
 		return value;
 	}
 	
-	public boolean isValueAlreadyFixed() {
+	public boolean isValueAlreadyFixed(byte[] wert) {
 		int numberOfposssibilities=0;
 		byte lastnumber=0;
 		for(byte j=0;j <= _maxnumber;++j) {
@@ -82,7 +82,8 @@ public class Feldelement {
 				throw new IllegalStateException("there is no solution");
 				//break; // exeption werfen
 			case 1:
-				this.setFixedValue(lastnumber);
+				//this.setFixedValue(lastnumber);
+				wert[0]=lastnumber;
 				return true;
 			default:
 				return false;
