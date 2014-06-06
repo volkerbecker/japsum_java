@@ -71,7 +71,7 @@ public class Feldelement {
 	public boolean isValueAlreadyFixed() {
 		int numberOfposssibilities=0;
 		byte lastnumber=0;
-		for(byte j=0;j < _maxnumber;++j) {
+		for(byte j=0;j <= _maxnumber;++j) {
 			if( isValuePossible(j) ) { 
 				++numberOfposssibilities;
 				lastnumber=j;
@@ -89,6 +89,7 @@ public class Feldelement {
 		}
 		//return false;
 	}
+
 	
 	private byte value=0; // initial wird das Feld mit 0 belegt;
 	private static int _maxnumber;

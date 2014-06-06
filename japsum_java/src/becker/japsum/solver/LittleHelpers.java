@@ -1,6 +1,6 @@
 package becker.japsum.solver;
 /**
- * some gerenrel helping methods
+ * some gerenral helping methods
  * @author becker
  *
  */

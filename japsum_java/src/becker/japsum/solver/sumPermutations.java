@@ -20,6 +20,41 @@ public class sumPermutations {
 			throw new IllegalStateException("Call setMaxnumber(byte maxnumber) before creating a sumPermutatin");
 		}
 		sums = sumsin.clone();
+		calculateAllPermutyations();
+		if(zeilen.size()==0) {
+			throw new IllegalStateException("There is no solution!");
+		}
+	}
+	
+	public int getSize() {
+		return zeilen.size();
+	}
+	
+	public boolean getnextpermuation(byte[] nextpermutation) {	
+		if(recentpermutation < (zeilen.size()-1) ) {
+			recentpermutation++;
+			for(int i=0;i<lineSize;++i) {
+				nextpermutation[i]=zeilen.get(recentpermutation)[i];
+			}
+			return true;
+		} else {
+			recentpermutation=-1;
+			nextpermutation=null;
+			return false;
+		}
+		
+		
+		
+	}
+	
+	public boolean removeRecentPermutation()
+	{
+		if(recentpermutation!=-1) {
+			zeilen.remove(recentpermutation);
+			recentpermutation--;
+			return true;
+		} else
+			return false;
 	}
 	
 	private byte qsum(byte[] folge){
@@ -29,7 +64,6 @@ public class sumPermutations {
 		}
 		return result;
 	}
-	
 	
 	private void increment(byte[] M,int i)
 	{
@@ -72,8 +106,13 @@ public class sumPermutations {
 		else
 			return true;
 	}
+	
+	private ArrayList<byte[] > possibleNumbers(int summe) {
+		return possibleNumbers(summe,maxnumber);
+	}
 		
-	public ArrayList<byte[] > possibleNumbers(int summe)
+
+	private ArrayList<byte[] > possibleNumbers(int summe,int maxnumber)
 	{
 		byte[] M;
 		ArrayList<byte[]>  result = new ArrayList<byte[]>();
@@ -104,7 +143,7 @@ public class sumPermutations {
 			return result;
 	}
 
-	public ArrayList<ArrayList<byte[] > > findCompatibleBlogs()
+	private ArrayList<ArrayList<byte[] > > findCompatibleBlogs()
 	{
 		int N=sums.length; // Anzahl der Bl√∂cke
 		ArrayList<ArrayList<byte[]> > posibleblogs=new ArrayList<ArrayList<byte[]> >();
@@ -151,7 +190,8 @@ public class sumPermutations {
 		return result;
 	}
 	
-	public void calculateAllPermutyations(){
+
+	private void calculateAllPermutyations(){
 		zeilen = new ArrayList<byte[]>();
 		int i=0;
 		
@@ -167,48 +207,87 @@ public class sumPermutations {
 			int freezeros=lineSize-digits-(blogset.size()-1);
 			if(freezeros<0) continue; //dieser blog passt nicht in die Zeile
 			
-			int[] zerosAtPlace = new int[blogset.size()+2];
+			int[] zerosAtPlace = new int[blogset.size()+1];
 			zerosAtPlace[zerosAtPlace.length-1]=freezeros;
 			
-			
-			int j=blogset.size()-1;
-			int momplaceforzeros=0;
+			boolean notcomplete=true;
 			do{
-				byte[] zeile=new byte[lineSize];
-				for(i=0;i<zerosAtPlace[momplaceforzeros];++i) {
-					zeile[i]=0;
-				}
-				for(byte[] block : blogset) {  
-					for(int k=0;k<block.length;++k) {
-						zeile[i++]=block[k];
+				int j=blogset.size()-1;
+				
+				do{
+					int momplaceforzeros=0;
+					byte[] zeile=new byte[lineSize];
+					for(i=0;i<zerosAtPlace[momplaceforzeros];++i) {
+						zeile[i]=0;
 					}
-					++momplaceforzeros;
-					for(int k=0;k<zerosAtPlace[momplaceforzeros];++k) {
-						zeile[i++]=0;
+					for(byte[] block : blogset) {  
+						for(int k=0;k<block.length;++k) {
+							zeile[i++]=block[k];
+						}
+						++momplaceforzeros;
+						for(int k=0;k<zerosAtPlace[momplaceforzeros];++k) {
+							zeile[i++]=0;
+						}
+						if(momplaceforzeros!=zerosAtPlace.length-1)
+							zeile[i++]=0; // obligatorische Trennungsnull auﬂer ganz hinten
 					}
-					//zeile[i++]=0; // obligatorische Trennungsnull
+					i=0;
+					zeilen.add(zeile);
+					while(!LittleHelpers.next_permutation(blogset.get(j) ) ) {
+						--j;
+						if(j<0) break;
+					}
+				} while(j>=0);
+				
+				boolean fertig;
+				int geradezuinkrementieren=zerosAtPlace.length-2; // vorletztes Element
+				do{
+					int obergrenze=freezeros;
+					int indexeins=0;
+					for(indexeins=0;indexeins!=geradezuinkrementieren;++indexeins) {
+						obergrenze-=zerosAtPlace[indexeins];
+					}
+					if(zerosAtPlace[geradezuinkrementieren]<obergrenze) {
+						++zerosAtPlace[geradezuinkrementieren];
+						fertig=true;
+					} else {
+						if(indexeins!=0) {
+							zerosAtPlace[geradezuinkrementieren]=0;
+							--geradezuinkrementieren;
+							fertig=false;
+						} else{
+							notcomplete=false;
+							fertig=true;
+							break;
+						}
+					}
+				} while(!fertig);
+				zerosAtPlace[zerosAtPlace.length-1]=freezeros;
+				for(int h=0;h<(zerosAtPlace.length-1);++h) {
+					zerosAtPlace[zerosAtPlace.length-1]-=zerosAtPlace[h];
 				}
-				i=0;
-				zeilen.add(zeile);
-				while(!LittleHelpers.next_permutation(blogset.get(j) ) ) {
-					--j;
-					if(j<0) break;
-				}
-			} while(j>=0);
+				// Die Elemente von Zerosatplace werden so duechiteriert, dass
+				// fuer das 1. Element die Werte 0..freezeros durchlaufen werden
+				// fuer das 2. Element die Werte 0..frezeros-1. Element
+				// usw das letzte Glied ergibt sich aus den anderen, so das die Summe
+				// freezeros ist
+				
+			} while(notcomplete);
 		}
 		//* For debugging and testing: 
 		
 		
-		for(byte[] zeile : zeilen) {
-			for(int k=0;k<zeile.length;++k) {
-				System.out.print(zeile[k]);
-			}
-			System.out.println("");
-		}
+		
+//		for(byte[] zeile : zeilen) {
+//			for(int k=0;k<zeile.length;++k) {
+//				System.out.print(zeile[k]);
+//			}
+//			System.out.println("");
+//		}
 	}
 	
 	static private byte maxnumber,lineSize;
-	private int recentpermutation; // sagt welche permutation als letztes zurÔøΩckgegeben wurde.
+	private int recentpermutation=-1; // sagt welche permutation als letztes zurÔøΩckgegeben wurde.
 	private byte[] sums; // enthaelt die Summen
 	ArrayList<byte[]> zeilen;  // enthaelt alle moeglichen Zeilen fuer die gegebenen Summen	
 	
