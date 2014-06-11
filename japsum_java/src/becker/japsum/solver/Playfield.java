@@ -126,6 +126,7 @@ public class Playfield {
 							zeile=i;
 						}
 					if(Feld[zeile][spalte].isValuePossible(j)){
+						//if(zeile==)
 						retvalue = true;
 						Feld[zeile][spalte].setValueImpossible(j);
 						byte[] wert = new byte[1];
@@ -148,9 +149,9 @@ public class Playfield {
 			somthinChanges=false;
 			for(int i=0;i<playfieldsize;++i) {
 				somthinChanges |= tryLines(true,i);
-				//displayPlayfield();
+			//	displayPlayfield();
 				somthinChanges |= tryLines(false,i);
-				//displayPlayfield();
+			//	displayPlayfield();
 			}
 			//displayPlayfield();
 		

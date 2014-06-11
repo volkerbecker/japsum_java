@@ -2,6 +2,8 @@ package becker.japsum.solver;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * erzeugt alle Permutastionen fuer eine Zeile Spalte mit gegebenen summenbloecken
@@ -20,7 +22,8 @@ public class sumPermutations {
 			throw new IllegalStateException("Call setMaxnumber(byte maxnumber) before creating a sumPermutatin");
 		}
 		sums = sumsin.clone();
-		calculateAllPermutyations();
+		calculateAllPermutyations(); // alle permutationen vorberechnen
+		recentPermutation=zeilen.listIterator(); // iterator auf erste permutation
 		if(zeilen.size()==0) {
 			throw new IllegalStateException("There is no solution!");
 		}
@@ -31,17 +34,27 @@ public class sumPermutations {
 	}
 	
 	public boolean getnextpermuation(byte[] nextpermutation) {	
-		if(recentpermutation < (zeilen.size()-1) ) {
-			recentpermutation++;
+//		if(recentpermutation < (zeilen.size()-1) ) {
+//			recentpermutation++;
+//			for(int i=0;i<lineSize;++i) {
+//				nextpermutation[i]=zeilen.get(recentpermutation)[i];
+//			}
+//			return true;
+//		} else {
+//			recentpermutation=-1;
+//			nextpermutation=null;
+//			return false;
+		if(recentPermutation.hasNext()) {
+			byte[] tmp=recentPermutation.next();
 			for(int i=0;i<lineSize;++i) {
-				nextpermutation[i]=zeilen.get(recentpermutation)[i];
+				nextpermutation[i]=tmp[i];
 			}
 			return true;
 		} else {
-			recentpermutation=-1;
-			nextpermutation=null;
+			recentPermutation = zeilen.listIterator(); // Iterator wieder auf den Anfang setzen
 			return false;
 		}
+			
 		
 		
 		
@@ -49,12 +62,14 @@ public class sumPermutations {
 	
 	public boolean removeRecentPermutation()
 	{
-		if(recentpermutation!=-1) {
-			zeilen.remove(recentpermutation);
-			recentpermutation--;
-			return true;
-		} else
-			return false;
+//		if(recentpermutation!=-1) {
+//			zeilen.remove(recentpermutation);
+//			recentpermutation--;
+//			return true;
+//		} else
+//			return false;
+		recentPermutation.remove();
+		return true;
 	}
 	
 	private byte qsum(byte[] folge){
@@ -143,7 +158,7 @@ public class sumPermutations {
 			return result;
 	}
 
-	private ArrayList<ArrayList<byte[] > > findCompatibleBlogs()
+	public ArrayList<ArrayList<byte[] > > findCompatibleBlogs()
 	{
 		int N=sums.length; // Anzahl der Blöcke
 		ArrayList<ArrayList<byte[]> > posibleblogs=new ArrayList<ArrayList<byte[]> >();
@@ -192,7 +207,7 @@ public class sumPermutations {
 	
 
 	private void calculateAllPermutyations(){
-		zeilen = new ArrayList<byte[]>();
+		zeilen = new LinkedList<byte[]>();
 		int i=0;
 		
 		ArrayList<ArrayList<byte[] > > compatibleBlogs= findCompatibleBlogs();
@@ -210,11 +225,13 @@ public class sumPermutations {
 			int[] zerosAtPlace = new int[blogset.size()+1];
 			zerosAtPlace[zerosAtPlace.length-1]=freezeros;
 			
+			
 			boolean notcomplete=true;
 			do{
-				int j=blogset.size()-1;
+				int j;
 				
 				do{
+					j=blogset.size()-1;
 					int momplaceforzeros=0;
 					byte[] zeile=new byte[lineSize];
 					for(i=0;i<zerosAtPlace[momplaceforzeros];++i) {
@@ -286,10 +303,12 @@ public class sumPermutations {
 //		}
 	}
 	
+	ListIterator<byte[]> recentPermutation;
+	
 	static private byte maxnumber,lineSize;
 	private int recentpermutation=-1; // sagt welche permutation als letztes zur�ckgegeben wurde.
 	private byte[] sums; // enthaelt die Summen
-	ArrayList<byte[]> zeilen;  // enthaelt alle moeglichen Zeilen fuer die gegebenen Summen	
+	LinkedList<byte[]> zeilen;  // enthaelt alle moeglichen Zeilen fuer die gegebenen Summen	
 	
 	
 	
